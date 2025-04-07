@@ -4,6 +4,7 @@ import { useChart } from "@/hooks/queries/melon/useChart";
 import { chartTypeAtom } from "@/store/atom";
 import { ChartType } from "@/types/melon.type";
 import { useAtom } from "jotai";
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import styled from "styled-components";
 
@@ -35,6 +36,8 @@ const MusicList = () => {
   const [chartType, setChartType] = useAtom(chartTypeAtom);
   const { data: chartList, isLoading, isError } = useChart();
 
+  const router = useRouter();
+
   useEffect(() => {
     console.log("데이터:", chartList);
   }, [chartType, chartList]);
@@ -60,7 +63,7 @@ const MusicList = () => {
         return (
           <MusicOneContainer key={index}>
             <RankSection>{index + 1}</RankSection>
-            <MusicSection>
+            <MusicSection onClick={() => router.push(`/song/${item.songId}`)}>
               {`🎵: ${item.name} 🎤: ${item.artists}`}
             </MusicSection>
           </MusicOneContainer>
