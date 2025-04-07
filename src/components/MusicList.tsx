@@ -1,22 +1,18 @@
 "use client";
 
 import { useChart } from "@/hooks/queries/melon/useChart";
-import { ChartType } from "@/types/melon.type";
-import { useEffect, useState } from "react";
+import { chartTypeAtom } from "@/store/atom";
+import { useAtom } from "jotai";
+import { useEffect } from "react";
 import styled from "styled-components";
 
 const MusicList = () => {
-  const [chartType, setChartType] = useState<ChartType>("day");
-
+  const [chartType, setChartType] = useAtom(chartTypeAtom);
   const { data: chartList, isLoading, isError } = useChart(chartType);
 
   useEffect(() => {
     console.log("데이터:", chartList);
   }, [chartType, chartList]);
-
-  const handleFilterButton = (type: ChartType) => {
-    setChartType(type);
-  };
 
   if (isLoading) return <div>로딩 중...</div>;
   if (isError) return <div>오류 발생...</div>;
@@ -27,25 +23,25 @@ const MusicList = () => {
       <FilterBtnContainer>
         <FilterBtn
           active={chartType === "day"}
-          onClick={() => handleFilterButton("day")}
+          onClick={() => setChartType("day")}
         >
           일간
         </FilterBtn>
         <FilterBtn
           active={chartType === "week"}
-          onClick={() => handleFilterButton("week")}
+          onClick={() => setChartType("week")}
         >
           주간
         </FilterBtn>
         <FilterBtn
           active={chartType === "month"}
-          onClick={() => handleFilterButton("month")}
+          onClick={() => setChartType("month")}
         >
           월간
         </FilterBtn>
         <FilterBtn
           active={chartType === "live"}
-          onClick={() => handleFilterButton("live")}
+          onClick={() => setChartType("live")}
         >
           실시간
         </FilterBtn>
