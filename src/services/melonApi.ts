@@ -14,7 +14,7 @@ export const fetchChart = async (chartType: ChartType) => {
 export const fetchLyric = async (songId: string) => {
   const response = await axios.get(`/api/melon/lyric/${songId}`);
 
-  const lyricArray = Object.values(response.data);
+  const lyricArray = response.data;
 
   return lyricArray;
 };

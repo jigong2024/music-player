@@ -54,7 +54,6 @@ export const HeaderContainer = styled.div`
   align-items: center;
   width: 80%;
   margin: 10px auto;
-  background-color: pink;
   padding: 20px 0px;
   font-size: x-large;
   font-weight: bold;

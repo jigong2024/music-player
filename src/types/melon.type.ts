@@ -9,3 +9,7 @@ export interface MelonChartItem {
 }
 
 export type MelonChartList = MelonChartItem[];
+
+export interface MelonLyricItem {
+  lyric: string;
+}
