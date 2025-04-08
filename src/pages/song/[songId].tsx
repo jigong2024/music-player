@@ -1,9 +1,12 @@
 import { useLyric } from "@/hooks/queries/melon/useLyric";
 import { baseUrl } from "../api/melon/baseUrl";
 import { GetServerSidePropsContext } from "next";
-import { useEffect } from "react";
+import { useMemo } from "react";
 import { MelonLyricItem } from "@/types/melon.type";
 import styled from "styled-components";
+import { useChart } from "@/hooks/queries/melon/useChart";
+import { useRouter } from "next/router";
+import { House } from "lucide-react";
 
 type SongDetailPageProps = {
   songId: string;
@@ -14,6 +17,9 @@ export default function SongDetailPage({
   songId,
   initialLyricData,
 }: SongDetailPageProps) {
+  const router = useRouter();
+
+  // 노래가사 데이터 가져오기
   const id = typeof songId === "string" ? songId : "";
 
   const {
@@ -22,9 +28,13 @@ export default function SongDetailPage({
     isError,
   } = useLyric(id, { initialData: initialLyricData });
 
-  useEffect(() => {
-    console.log("가사=>", lyricData);
-  }, [lyricData]);
+  //  차트 데이터 가져오기
+  const { data: chartData } = useChart();
+
+  const songInfo = useMemo(() => {
+    if (!chartData) return null;
+    return chartData.find((item) => item.songId === id) || null;
+  }, [chartData, id]);
 
   if (isLoading) return <div>로딩 중...</div>;
   if (isError) return <div>오류 발생...</div>;
@@ -34,7 +44,18 @@ export default function SongDetailPage({
 
   return (
     <Background>
-      <HeaderContainer>노래 가사</HeaderContainer>
+      <HomeButton onClick={() => router.push("/")}>
+        <House color="white" />
+      </HomeButton>
+      {/* 노래 정보 표시 (있는 경우만) */}
+      {songInfo && (
+        <SongInfoContainer>
+          <SongTitle>{songInfo.name}</SongTitle>
+          <ArtistName>아티스트: {songInfo.artists}</ArtistName>
+          <ArtistName>랭킹순위: {songInfo.ranking}</ArtistName>
+        </SongInfoContainer>
+      )}
+      <LyricTItle>{`< 노래 가사 >`}</LyricTItle>
       <MusicLyricContainer>
         {lyrics.map((line: string, index: number) => (
           <Lyric key={index}>{line || <br />}</Lyric>
@@ -48,8 +69,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   const songId = context.params?.songId as string;
 
   try {
-    const response = await baseUrl.get(`/lyric/${songId}`);
-    const lyricData = response.data;
+    // 가사 데이터 가져오기
+    const lyricResponse = await baseUrl.get(`/lyric/${songId}`);
+    const lyricData = lyricResponse.data;
 
     console.log("가사", lyricData);
 
@@ -65,6 +87,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
 }
 
 export const Background = styled.div`
+  position: relative;
+
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -72,13 +96,44 @@ export const Background = styled.div`
   width: 100%;
 `;
 
-export const HeaderContainer = styled.div`
+export const HomeButton = styled.button`
+  position: absolute;
+  right: 20px;
+  top: 20px;
+
+  padding: 10px;
+  background-color: #3ed9c9;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+`;
+
+// 노래정보
+const SongInfoContainer = styled.div`
+  width: 80%;
+  margin: 20px auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #f5f5f5;
+`;
+
+const SongTitle = styled.h1`
+  font-size: 24px;
+  margin-bottom: 10px;
+`;
+
+const ArtistName = styled.p`
+  font-size: 18px;
+`;
+
+// 노래가사
+export const LyricTItle = styled.div`
   display: flex;
   align-items: center;
   width: 80%;
   margin: 10px auto;
   padding: 20px 0px;
-  font-size: x-large;
+  font-size: 18px;
   font-weight: bold;
 `;
 

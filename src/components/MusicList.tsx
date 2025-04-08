@@ -69,9 +69,12 @@ export default function MusicList({
       </FilterBtnContainer>
       {chartList.map((item, index) => {
         return (
-          <MusicOneContainer key={index}>
+          <MusicOneContainer
+            key={index}
+            onClick={() => router.push(`/song/${item.songId}`)}
+          >
             <RankSection>{index + 1}</RankSection>
-            <MusicSection onClick={() => router.push(`/song/${item.songId}`)}>
+            <MusicSection>
               {`🎵: ${item.name} 🎤: ${item.artists}`}
             </MusicSection>
           </MusicOneContainer>
@@ -110,11 +113,13 @@ export const FilterBtn = styled.button<ButtonType>`
   padding: 10px 15px;
   color: ${(props) => (props.active ? "white" : "#83a0ab")};
   font-weight: bold;
+  cursor: pointer;
 `;
 
 export const MusicOneContainer = styled.div`
   display: flex;
   gap: 10px;
+  cursor: pointer;
 `;
 
 export const RankSection = styled.div`
