@@ -4,6 +4,7 @@ import MusicList from "@/components/MusicList";
 import styled from "styled-components";
 import { MelonChartList } from "@/types/melon.type";
 import { baseUrl } from "./api/melon/baseUrl";
+import SearchSection from "@/components/SearchSection";
 
 export default function Home({ initialData }: { initialData: MelonChartList }) {
   return (
@@ -15,6 +16,7 @@ export default function Home({ initialData }: { initialData: MelonChartList }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Background>
+        <SearchSection />
         <HeaderContainer>🎶 실시간 노래 차트 🎶</HeaderContainer>
         <main className={styles.main}>
           <MusicList initialData={initialData} />
@@ -53,7 +55,7 @@ export const HeaderContainer = styled.div`
   display: flex;
   align-items: center;
   width: 80%;
-  margin: 10px auto;
+  margin: 0px auto;
   padding: 20px 0px;
   font-size: x-large;
   font-weight: bold;
