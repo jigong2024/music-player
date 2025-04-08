@@ -1,8 +1,6 @@
-"use client";
-
 import { useChart } from "@/hooks/queries/melon/useChart";
 import { chartTypeAtom } from "@/store/atom";
-import { ChartType } from "@/types/melon.type";
+import { ChartType, MelonChartList } from "@/types/melon.type";
 import { useAtom } from "jotai";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -32,9 +30,19 @@ const filterBtnList: FilterBtnListType[] = [
   },
 ];
 
-const MusicList = () => {
+export default function MusicList({
+  initialData,
+}: {
+  initialData: MelonChartList;
+}) {
   const [chartType, setChartType] = useAtom(chartTypeAtom);
-  const { data: chartList, isLoading, isError } = useChart();
+  const {
+    data: chartList,
+    isLoading,
+    isError,
+  } = useChart({
+    initialData: chartType === "day" ? initialData : undefined,
+  });
 
   const router = useRouter();
 
@@ -71,9 +79,7 @@ const MusicList = () => {
       })}
     </MusicListContainer>
   );
-};
-
-export default MusicList;
+}
 
 export const MusicListContainer = styled.div`
   display: flex;

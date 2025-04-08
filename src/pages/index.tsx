@@ -2,8 +2,10 @@ import Head from "next/head";
 import styles from "@/styles/Home.module.css";
 import MusicList from "@/components/MusicList";
 import styled from "styled-components";
+import { MelonChartList } from "@/types/melon.type";
+import { baseUrl } from "./api/melon/baseUrl";
 
-export default function Home() {
+export default function Home({ initialData }: { initialData: MelonChartList }) {
   return (
     <>
       <Head>
@@ -15,11 +17,30 @@ export default function Home() {
       <Background>
         <HeaderContainer>🎶 실시간 노래 차트 🎶</HeaderContainer>
         <main className={styles.main}>
-          <MusicList />
+          <MusicList initialData={initialData} />
         </main>
       </Background>
     </>
   );
+}
+
+export async function getStaticProps() {
+  try {
+    const response = await baseUrl.get(`/chart/day`);
+    const initialData = Object.values(response.data);
+
+    return {
+      props: { initialData },
+      revalidate: 3600, // 1시간마다 재생성
+    };
+  } catch (error) {
+    console.error("데이터 가져오기 실패:", error);
+
+    return {
+      props: { initialData: [] },
+      revalidate: 3600,
+    };
+  }
 }
 
 export const Background = styled.div`
