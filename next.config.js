@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  reactStrictMode: true,
-  // 다른 설정들...
+  compiler: {
+    styledComponents: true,
+  },
+  // 기존 설정 유지
 };
 
 module.exports = nextConfig;
